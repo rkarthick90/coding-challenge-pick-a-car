@@ -1,46 +1,134 @@
-# coding-challenge-pick-a-car
+# Friday Coding challenge - Pick a car
 
-# Getting Started 
+Simple web app that allows a user to select their car from a directory of registered cars.
+This data will be provided by the api server in this repo.
+The api provides a list of available makes, models of each make and specific cars for each model with horsepower and engine capacity info.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Project Installation and running
 
-## Available Scripts
+- Install client project dependencies: `cd pick-a-car && npm install`.
+- Run project: `npm start`. Application runs on `localhost:3000`, and expects the server running on `localhost:8080`.
+- Run unit tests: `npm run test`.
+- Build project: `npm run build`. Built application can be found in `dist` folder.
 
-In the project directory, you should run both client and server:
+# Project planning
+### Client
+- Created with `React` and `React-dom` which should serve UI
+- for styling css used `styled-components`
+- Fetch operations - `axios` and query caching and handling retry utilized `react-query`
+- To perform unit testing chose `react-testing-library`
+- To perform hooks unit testing chose `react-hooks-testing-libarary`
+### Server
+- Server would run on node json server as  apiserver.
+- The api provides a list of available makes, models of each make and specific cars for each model with horsepower and engine capacity info.
 
-### `Client
+# Running The Client
+You will need node.js version 7.6 or higher
 
-#### `cd pick-a-car && npm start`
+```bash
+cd pick-a-car
+npm start
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+# Running The Server
+You will need node.js version 7.6 or higher
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+node apiserver/server.js
+```
 
-#### `node apiserver/server.js`
+# API Endpoints
 
-### `npm run test`
+## http://localhost:8080/api/makes
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Fetches the available car makes to choose from.
 
-### `npm run build`
+### Params
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+none
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Return value
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+An array of strings, each representing a unique car make.
 
-### `npm run eject`
+### Example request
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+`GET http://localhost:8080/api/makes`
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Example response
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```json
+[
+  "Ford",
+  "Opel",
+  ...
+]
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## http://localhost:8080/api/models
+
+Fetches the available car models for the specified make.
+
+### Params
+
+- make: string _(required)_
+
+### Return value
+
+An array of strings, each representing a unique model of the specified make.
+
+### Example Request
+
+`GET http://localhost:8080/api/models?make=Ford`
+
+### Example response
+
+```json
+[
+  "Explorer",
+  "Fiesta",
+  ...
+]
+```
+
+## http://localhost:8080/api/vehicles
+
+Fetches the available registered cars for the specified make and model.
+
+### Params
+
+- make: string _(required)_
+- model: string _(required)_
+
+### Return value
+
+An Array of objects with the following properties:
+
+- make: string `// the make of the car`
+- model: string `// the model of the car`
+- enginePowerPS: number `// engine power in Horsepower units`
+- enginePowerPW: number `// engine power in KiloWatts`
+- fuelType: string `// fuel type`
+- bodyType: string `// body type`
+- engineCapacity: number `// engine capacity in cc`
+
+### Example Request
+
+`GET http://localhost:8080/api/vehicles?make=Ford&model=Fiesta`
+
+### Example response
+
+```json
+[
+  {
+    "make": 'Ford',
+    "model": 'Fiesta',
+    "enginePowerPS": 54,
+    "enginePowerKW": 40,
+    "fuelType": 'Diesel',
+    "bodyType": 'Limousine',
+    "engineCapacity": 1119
+  },
+  ...
+]
+```
